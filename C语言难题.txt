@@ -1,0 +1,174 @@
+编写程序，生成一种贯穿10*10字符数组（初始时全为字符'.'）的“随机步法”。程序必须随机地从一个元素“走到”另一个元素，每次都向上、向下、向左或向右移动一个元素位置。已访问过的元素按照访问顺序用字母A到Z进行标记。
+
+提示：利用srand函数和rand函数产生随机数，然后查看此数除以4的余数。余数一共有4种可能的值（0、1、2、3），指示下一次移动的4中可能方向。在执行移动之前，需要检查两项内容:一是不能走到数组外面，二是不能走到已有字母标记的位置。只要有一条件不能满足，就得尝试换一个方向移动。如果4个方向都堵住了，程序就必须终止了。
+
+要求：包含函数：void generate_random_walk(char walk[10][10]);     void print_array(char walk[10][10]);  main函数首先调用generate_random_walk,该函数把所有数组元素都初始化为字符'.'，然后将其中一些字符替换为A到Z的字母。接着，main函数调用print_array函数来显示数组。
+
+
+#include <stdio.h>
+#include<stdlib.h>
+#include<time.h>
+void generate_random_walk(char walk[10][10]);
+void print_array(char walk[10][10]);
+int main(void)
+{
+    char a[10][10];
+    int i, j;
+    generate_random_walk(a);//函数调用
+    for (i = 0; i < 10; i++)
+    {
+        for (j = 0; j < 10; j++)
+        {
+            printf("%c  ", a[i][j]);
+
+        }
+        printf("\n");
+    }
+
+    printf("\n");
+    printf("\n");
+
+    print_array(a);
+    return 0;
+}
+
+void generate_random_walk(char walk[10][10])//调用函数，打印矩阵星图。
+{
+    int i, j;
+    for (i = 0; i < 10; i++)
+        for (j = 0; j < 10; j++)
+            walk[i][j] = '.';
+}
+
+void print_array(char walk[10][10])//随即步
+{
+    srand((unsigned)time(NULL));//产生随机数
+    char walker = 'A';//初始化变量为A，随机某个位置，也就是说只需要这一个不是伪随机数就行
+    int tmp, i = 0, j = 0;
+    walk[i][j] = walker;
+    walker++;
+    for (;;)//终止条件在循环内部
+    {
+        tmp = rand() % 4;//四种方向，随机数模4刚好三种结果。
+        if (tmp == 0 && walker <= 'Z')//对零进行约束，且此代表
+        {
+            if (i >= 1 && walk[i - 1][j] == '.')
+            {
+                walk[i - 1][j] = walker;
+                walker++;
+                i = i - 1;
+            }
+           else if (i < 9 && walk[i + 1][j] == '.')
+            {
+                walk[i + 1][j] = walker;
+                walker++;
+                i = i + 1;
+            }
+            else if (j > 0 && walk[i][j - 1] == '.')
+            {
+                walk[i][j - 1] = walker;
+                walker++;
+                j = j - 1;
+            }
+            else if (j < 9 && walk[i][j + 1] == '.')
+            {
+                walk[i][j + 1] = walker;
+                walker++;
+                j = j + 1;
+            }//打印处必须为点，且移动步数不超过矩阵
+            else
+                break;
+        }
+        else if (tmp == 1 && walker <= 'Z')//对一进行约束
+        {
+            if (i < 9 && walk[i + 1][j] == '.')
+            {
+                walk[i + 1][j] = walker;
+                walker++;
+                i = i + 1;
+            }
+            else if (j > 0 && walk[i][j - 1] == '.')
+            {
+                walk[i][j - 1] = walker++;
+                j--;
+            }
+            else if (j < 9 && walk[i][j + 1] == '.')
+            {
+                walk[i][j + 1] = walker++;
+                j++;
+            }
+            else if (i > 0 && walk[i - 1][j] == '.')
+            {
+                walk[i - 1][j] = walker++;
+                i--;
+            }
+
+            else
+                break;//否则不能运行
+        }
+        else if (tmp == 2 && walker <= 'Z')//
+        {
+            if (j > 0 && walk[i][j - 1] == '.')
+            {
+                walk[i][j - 1] = walker;
+                walker++;
+                j = j - 1;
+            }
+            else if (j < 9 && walk[i][j + 1] == '.')
+            {
+                walk[i][j + 1] = walker++;
+                j++;
+            }
+            else if (i > 0 && walk[i - 1][j] == '.')
+            {
+                walk[i - 1][j] = walker++;
+                i--;
+            }
+            else if (i < 9 && walk[i + 1][j] == '.')
+            {
+                walk[i + 1][j] = walker++;
+                i++;
+            }
+            else
+                break;//否则不能运行
+        }
+        else if (tmp == 3 && walker <= 'Z')//
+        {
+            if (j < 9 && walk[i][j + 1] == '.')
+            {
+                walk[i][j + 1] = walker;
+                walker++;
+                j = j + 1;
+            }
+            else if (j > 0 && walk[i][j - 1] == '.')
+            {
+                walk[i][j - 1] = walker++;
+                j--;
+            }
+
+            else if (i < 9 && walk[i + 1][j] == '.')
+            {
+                walk[i + 1][j] = walker++;
+                i++;
+            }
+            else if (i > 0 && walk[i - 1][j] == '.')
+            {
+                walk[i - 1][j] = walker++;
+                i--;
+            }
+            else
+                break;//否则不能运行
+        }
+        else
+            break;除上述，不能运行。
+
+    }
+    for (i = 0; i < 10; i++)
+    {
+        for (j = 0; j < 10; j++)
+        {
+            printf("%c  ", walk[i][j]);
+        }
+        printf("\n");//打印处理好的矩阵
+    }
+}
